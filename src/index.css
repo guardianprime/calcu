@@ -43,6 +43,7 @@
 
 .buttons {
   outline: 2px solid blue;
+  border: none;
   display: flex;
   justify-items: center;
   align-items: center;
