@@ -49,19 +49,23 @@ export default function App() {
       <EqualSignButtonOperator
         classes="buttons equals" value="=" setResult={setResult}
         preview={preview} setPreview={setPreview}
-        onFinishedCalculating={setFinishedCalculating}>
+        onFinishedCalculating={setFinishedCalculating} finishedCalculating={finishedCalculating}>
         <span><i className="fa-solid fa-equals"></i></span>
       </EqualSignButtonOperator>
     </div>
   </div>
 }
 
-function EqualSignButtonOperator({ classes, value, setResult, children, preview, setPreview, onFinishedCalculating }) {
+function EqualSignButtonOperator({ classes, value, setResult, children, preview, setPreview, onFinishedCalculating, finishedCalculating }) {
+
   function handleClick() {
+    if (finishedCalculating) return
     let answer = evaluate(preview);
     setResult(answer);
     onFinishedCalculating(true);
     setPreview(answer);
+    console.log("working")
+
   }
 
 
