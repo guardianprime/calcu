@@ -97,10 +97,14 @@ function DeleteButtonOperator({ children, classes, preview, setPreview, finished
   function handleTyping() {
     if (finishedCalculating) return;
     let regex = /\s(?=\S$)/;
+    let secondRegex = /(?<=\s).(?=\s$)/;
     let hasSpaceBeforeLastCharacter = regex.test(preview);
+    let hasSpaceBeforeAndAfterLastCharacter = secondRegex.test(preview);
     let newPreview;
     if (hasSpaceBeforeLastCharacter) {
       newPreview = preview.slice(0, -2);
+    } else if (hasSpaceBeforeAndAfterLastCharacter) {
+      newPreview = preview.slice(0, -3);
     } else {
       newPreview = preview.slice(0, -1);
     }
@@ -127,51 +131,37 @@ function ButtonNumber({ children, classes, value, setPreview, onFinishedCalculat
   )
 }
 
-/* 
-function ButtonOperators({ children, classes, arithmetricValue, setPreview, onFinishedCalculating }) {
+
+function ButtonOperators({ children, classes, arithmetricValue, setPreview, preview, onFinishedCalculating }) {
+  const [isDisabled, setIsDisabled] = useState(false);
+
   function handleTyping() {
-    setPreview(p => `${p} ${arithmetricValue} `)
-    onFinishedCalculating(false);
-  }
+    setIsDisabled(true); // Disable the button
 
+    // Ensure preview is a string
+    const previewString = String(preview).trim();
+    const lastChar = previewString.charAt(previewString.length - 1);
 
-  return (
-    <button className={classes} onClick={handleTyping}>{children}</button>
-  );
-} */
+    // Check if the last character is the same as the new value
+    if (lastChar === arithmetricValue) {
+      // If the value is already the last character, do nothing
+      setIsDisabled(false);
+      return;
+    } else {
+      // Otherwise, add the new value
+      setIsDisabled(false);
+      setPreview(p => `${p} ${arithmetricValue} `);
+    }
 
-
-function ButtonOperators({ children, classes, arithmetricValue, setPreview, onFinishedCalculating }) {
-  function handleTyping() {
-    setPreview((preview) => {
-      // Get the last character of the preview string
-      const lastChar = preview.slice(-1);
-
-      // Check if the last character is the same as the new value
-      if (lastChar === arithmetricValue) {
-        return preview; // If the value is already the last character, return the current preview
-      }
-
-      // Replace the last character with the new value or append the new value
-      let updatedPreview;
-      if (/\S/.test(lastChar)) { // Check if the last character is not a whitespace
-        updatedPreview = `${preview.slice(0, -1)} ${arithmetricValue}`;
-      } else {
-        updatedPreview = `${preview} ${arithmetricValue}`;
-      }
-
-      return updatedPreview;
-    });
-    
     onFinishedCalculating(false);
   }
 
   return (
-    <button className={classes} onClick={handleTyping}>{children}</button>
+    <button className={classes} onClick={handleTyping} disabled={isDisabled}>
+      {children}
+    </button>
   );
 }
-
-
 
 
 function Preview({ preview }) {
