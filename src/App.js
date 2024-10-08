@@ -172,8 +172,24 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
 
 
 function Preview({ preview }) {
+  function replaceSymbols(inputString) {
+    const replacements = {
+      '*': 'x',
+      '/': '÷'
+    };
+
+    let result = inputString;
+
+    for (const [symbol, number] of Object.entries(replacements)) {
+      result = result.split(symbol).join(number);
+    }
+
+    return result;
+  }
+  const fakePreview = replaceSymbols(preview);
+
   return (
-    <div className="preview">{preview}</div>
+    <div className="preview">{fakePreview}</div>
   )
 }
 
