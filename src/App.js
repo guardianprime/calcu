@@ -82,7 +82,7 @@ function ClearButtonOperator({ classes, setPreview, children, setResult }) {
 
   function handleClick() {
     setPreview("");
-    setResult(0);
+    setResult("");
   }
 
 
@@ -134,12 +134,14 @@ function ButtonNumber({ children, classes, value, setPreview, onFinishedCalculat
 
 function ButtonOperators({ children, classes, arithmetricValue, setPreview, preview, onFinishedCalculating }) {
   const [isDisabled, setIsDisabled] = useState(false);
+  const mathValues = ['+', '-', '*', '/'];
 
   function handleTyping() {
+    if (!preview) return;
     setIsDisabled(true); // Disable the button
 
     // Ensure preview is a string
-    const previewString = String(preview).trim();
+    let previewString = String(preview).trim();
     const lastChar = previewString.charAt(previewString.length - 1);
 
     // Check if the last character is the same as the new value
@@ -147,12 +149,17 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
       // If the value is already the last character, do nothing
       setIsDisabled(false);
       return;
+    } else if (mathValues.includes(lastChar)) {
+      // Replace the last character with the new arithmetic value
+      let arr = previewString.split("");
+      arr.splice(arr.length - 1, 1, arithmetricValue);
+      let newArr = arr.join("");
+      setPreview(newArr);
     } else {
       // Otherwise, add the new value
-      setIsDisabled(false);
-      setPreview(p => `${p} ${arithmetricValue} `);
+      setPreview(p => `${p}${arithmetricValue}`);
     }
-
+    setIsDisabled(false);
     onFinishedCalculating(false);
   }
 
