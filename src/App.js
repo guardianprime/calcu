@@ -192,24 +192,34 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
 function Preview({ preview }) {
   function replaceSymbols(inputString) {
     const replacements = {
-      '*': 'x',
-      '/': '÷'
+      '*': <span className="styled-symbols">x</span>,
+      '/': <span className="styled-symbols">÷</span>,
+      '+': <span className="styled-symbols">+</span>,
+      '-': <span className="styled-symbols">-</span>
     };
 
-    let result = inputString;
+    let result = [];
 
-    for (const [symbol, number] of Object.entries(replacements)) {
-      result = result.split(symbol).join(number);
+    for (let i = 0; i < inputString.length; i++) {
+      const char = inputString[i];
+      if (replacements[char]) {
+        result.push(replacements[char]);
+      } else {
+        result.push(char);
+      }
     }
 
     return result;
   }
+
   const fakePreview = replaceSymbols(preview);
 
   return (
     <div className="preview">{fakePreview}</div>
-  )
+  );
 }
+
+
 
 function Result({ result }) {
 
