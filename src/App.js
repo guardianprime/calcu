@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { evaluate } from "mathjs";
+/* import NumberFormat from 'react-number-format'; */
 
 export default function App() {
   const [preview, setPreview] = useState("");
@@ -11,10 +12,10 @@ export default function App() {
     <div className="screen">
       <div className="mode-toggle">darkmode</div>
       {finishedCalculating && <Result result={result} />}
-      {!finishedCalculating && <Preview preview={preview} />}
+      {(!finishedCalculating && preview) && <Preview preview={preview} />}
     </div>
     <div className="buttons-container">
-      <ClearButtonOperator setPreview={setPreview} classes="buttons" value="clear" setResult={setResult}><span>AC</span></ClearButtonOperator>
+      <ClearButtonOperator setPreview={setPreview} value="clear" setResult={setResult} onFinishedCalculating={setFinishedCalculating}><span>AC</span></ClearButtonOperator>
       <DeleteButtonOperator preview={preview} classes="buttons" value="delete" setPreview={setPreview} finishedCalculating={finishedCalculating}>
         <span><i className="fa-solid fa-delete-left"></i></span>
       </DeleteButtonOperator>
@@ -24,27 +25,27 @@ export default function App() {
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="/">
         <span><i className="fa-solid fa-divide"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="1"><span>1</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="2"><span>2</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="3"><span>3</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="1"><span>1</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="2"><span>2</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="3"><span>3</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="*">
         <span><i className="fa-solid fa-xmark"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="4"><span>4</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="5"><span>5</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="6"><span>6</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="4"><span>4</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="5"><span>5</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="6"><span>6</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="-">
         <span><i className="fa-solid fa-minus"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="7"><span>7</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="8"><span>8</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="9"><span>9</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="7"><span>7</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="8"><span>8</span></ButtonNumber>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="9"><span>9</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="+">
         <span><i className="fa-solid fa-plus"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons" value="0"><span>0</span></ButtonNumber>
-      <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue=".">
-        <span><i className="fa-solid fa-period"></i></span>
+      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="0"><span>0</span></ButtonNumber>
+      <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons number" arithmetricValue=".">
+        <span>.</span>
       </ButtonOperators>
       <EqualSignButtonOperator
         classes="buttons equals" setResult={setResult}
@@ -57,7 +58,14 @@ export default function App() {
 }
 
 function EqualSignButtonOperator({ classes, setResult, children, preview, setPreview, onFinishedCalculating, finishedCalculating }) {
+  const [clicked, setClicked] = useState(false);
+
   function handleClick() {
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 300);
+
     if (finishedCalculating) return;
     let answer;
     try {
@@ -73,28 +81,32 @@ function EqualSignButtonOperator({ classes, setResult, children, preview, setPre
 
 
   return (
-    <button className={classes} onClick={handleClick}>{children}</button>
+    <button className={clicked ? "toggle-color " + classes : classes} onClick={handleClick}>{children}</button>
   )
 }
 
 
-function ClearButtonOperator({ classes, setPreview, children, setResult }) {
+function ClearButtonOperator({ setPreview, children, setResult, onFinishedCalculating }) {
 
   function handleClick() {
     setPreview("");
     setResult("");
+    onFinishedCalculating(false);
   }
 
 
   return (
-    <button onClick={handleClick} classNames={classes}>{children}</button>
+    <button onClick={handleClick} className="buttons">{children}</button>
   )
 }
 
 
 function DeleteButtonOperator({ children, classes, preview, setPreview, finishedCalculating }) {
+  const [clicked, setClicked] = useState(false);
 
   function handleTyping() {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 300)
     if (finishedCalculating) return;
     let regex = /\s(?=\S$)/;
     let secondRegex = /(?<=\s).(?=\s$)/;
@@ -112,7 +124,7 @@ function DeleteButtonOperator({ children, classes, preview, setPreview, finished
   }
 
   return (
-    <button className={classes} onClick={handleTyping}>{children}</button>
+    <button className={clicked ? "toggle-bg-color " + classes : classes} onClick={handleTyping}>{children}</button>
   )
 }
 
@@ -121,22 +133,28 @@ function DeleteButtonOperator({ children, classes, preview, setPreview, finished
 
 
 function ButtonNumber({ children, classes, value, setPreview, onFinishedCalculating }) {
+  const [clicked, setClicked] = useState(false);
   function handleTyping() {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 300);
     setPreview((p) => p + value);
     onFinishedCalculating(false);
   }
 
   return (
-    <button className={classes} onClick={handleTyping}>{children}</button>
+    <button className={clicked ? "toggle-bg-color " + classes : classes} onClick={handleTyping}>{children}</button>
   )
 }
 
 
 function ButtonOperators({ children, classes, arithmetricValue, setPreview, preview, onFinishedCalculating }) {
   const [isDisabled, setIsDisabled] = useState(false);
+  const [clicked, setClicked] = useState(false);
   const mathValues = ['+', '-', '*', '/'];
 
   function handleTyping() {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 300);
     if (!preview) return;
     setIsDisabled(true); // Disable the button
 
@@ -164,9 +182,9 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
   }
 
   return (
-    <button className={classes} onClick={handleTyping} disabled={isDisabled}>
+    <button className={clicked ? "toggle-bg-color " + classes : classes} onClick={handleTyping} disabled={isDisabled} >
       {children}
-    </button>
+    </button >
   );
 }
 
@@ -194,7 +212,9 @@ function Preview({ preview }) {
 }
 
 function Result({ result }) {
+
   return (
-    <div className="result"><h1>{result}</h1></div>
+    <div className="result">{result}</div>
   )
 }
+
