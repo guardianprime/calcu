@@ -87,8 +87,13 @@ function EqualSignButtonOperator({ classes, setResult, children, preview, setPre
 
 
 function ClearButtonOperator({ setPreview, children, setResult, onFinishedCalculating }) {
+  const [clicked, setClicked] = useState(false);
 
   function handleClick() {
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 300);
     setPreview("");
     setResult("");
     onFinishedCalculating(false);
@@ -96,7 +101,7 @@ function ClearButtonOperator({ setPreview, children, setResult, onFinishedCalcul
 
 
   return (
-    <button onClick={handleClick} className="buttons">{children}</button>
+    <button onClick={handleClick} className={clicked ? `toggle-bg-color buttons` : "buttons"}>{children}</button>
   )
 }
 
@@ -188,15 +193,14 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
   );
 }
 
-
-function Preview({ preview }) {
+const Preview = ({ preview }) => {
   function replaceSymbols(inputString) {
     const replacements = {
-      '*': <span className="styled-symbols">x</span>,
-      '/': <span className="styled-symbols">÷</span>,
-      '+': <span className="styled-symbols">+</span>,
-      '-': <span className="styled-symbols">-</span>
-    };
+      '*': <span className="styled-symbols" key={Date.now()}>x</span>,
+      '/': <span className="styled-symbols" key={Date.now()}>x</span>,
+      '+': <span className="styled-symbols" key={Date.now()}>+</span>,
+      '-': <span className="styled-symbols" key={Date.now()}>-</span>
+    }
 
     let result = [];
 
@@ -205,10 +209,9 @@ function Preview({ preview }) {
       if (replacements[char]) {
         result.push(replacements[char]);
       } else {
-        result.push(char);
+        result.push(char)
       }
     }
-
     return result;
   }
 
@@ -216,15 +219,19 @@ function Preview({ preview }) {
 
   return (
     <div className="preview">{fakePreview}</div>
-  );
+  )
 }
 
 
-
 function Result({ result }) {
-
+  const formatNumber = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+  const inputString = String(result);
+  const formattedString = inputString.replace(/\d+/g, (match) => formatNumber(match));
+  console.log(formattedString);
   return (
-    <div className="result">{result}</div>
+    <div className="result">{formattedString}</div>
   )
 }
 
