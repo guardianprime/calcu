@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, React } from "react";
 import { evaluate } from "mathjs";
 /* import NumberFormat from 'react-number-format'; */
 
@@ -25,25 +25,25 @@ export default function App() {
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="/">
         <span><i className="fa-solid fa-divide"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="1"><span>1</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="2"><span>2</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="3"><span>3</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="1"><span>1</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="2"><span>2</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="3"><span>3</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="*">
         <span><i className="fa-solid fa-xmark"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="4"><span>4</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="5"><span>5</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="6"><span>6</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="4"><span>4</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="5"><span>5</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="6"><span>6</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="-">
         <span><i className="fa-solid fa-minus"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="7"><span>7</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="8"><span>8</span></ButtonNumber>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="9"><span>9</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="7"><span>7</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="8"><span>8</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="9"><span>9</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons" arithmetricValue="+">
         <span><i className="fa-solid fa-plus"></i></span>
       </ButtonOperators>
-      <ButtonNumber onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="0"><span>0</span></ButtonNumber>
+      <ButtonNumber finishedCalculating={finishedCalculating} onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} classes="buttons number" value="0"><span>0</span></ButtonNumber>
       <ButtonOperators onFinishedCalculating={setFinishedCalculating} setPreview={setPreview} preview={preview} classes="buttons number" arithmetricValue=".">
         <span>.</span>
       </ButtonOperators>
@@ -134,12 +134,10 @@ function DeleteButtonOperator({ children, classes, preview, setPreview, finished
 }
 
 
-
-
-
-function ButtonNumber({ children, classes, value, setPreview, onFinishedCalculating }) {
+function ButtonNumber({ children, classes, value, setPreview, onFinishedCalculating, finishedCalculating }) {
   const [clicked, setClicked] = useState(false);
   function handleTyping() {
+    if (finishedCalculating) return;
     setClicked(true);
     setTimeout(() => setClicked(false), 300);
     setPreview((p) => p + value);
@@ -193,45 +191,66 @@ function ButtonOperators({ children, classes, arithmetricValue, setPreview, prev
   );
 }
 
+const formatNumber = (number) => {
+  return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+const replaceSymbols = (inputString) => {
+  const replacements = {
+    '*': <span className="styled-symbols" key={Date.now()}>x</span>,
+    '/': <span className="styled-symbols" key={Date.now()}>÷</span>,
+    '+': <span className="styled-symbols" key={Date.now()}>+</span>,
+    '-': <span className="styled-symbols" key={Date.now()}>-</span>
+  };
+
+  return inputString.split('').map((char, index) =>
+    replacements[char] ? replacements[char] : <span key={index}>{char}</span>
+  );
+};
+
+const formatContent = (inputString) => {
+  return inputString.replace(/\d+(\.\d+)?/g, (match) => {
+    if (match.includes('.')) {
+      const [integerPart, decimalPart] = match.split('.');
+      return `${formatNumber(integerPart)}.${decimalPart}`;
+    }
+    return formatNumber(match);
+  });
+};
+
 const Preview = ({ preview }) => {
-  function replaceSymbols(inputString) {
-    const replacements = {
-      '*': <span className="styled-symbols" key={Date.now()}>x</span>,
-      '/': <span className="styled-symbols" key={Date.now()}>x</span>,
-      '+': <span className="styled-symbols" key={Date.now()}>+</span>,
-      '-': <span className="styled-symbols" key={Date.now()}>-</span>
-    }
+  // Format numbers first
+  const formattedString = formatContent(preview);
 
-    let result = [];
-
-    for (let i = 0; i < inputString.length; i++) {
-      const char = inputString[i];
-      if (replacements[char]) {
-        result.push(replacements[char]);
-      } else {
-        result.push(char)
-      }
-    }
-    return result;
-  }
-
-  const fakePreview = replaceSymbols(preview);
+  // Then, replace symbols
+  const contentWithSymbols = replaceSymbols(formattedString);
 
   return (
-    <div className="preview">{fakePreview}</div>
-  )
-}
+    <div className="preview">
+      {contentWithSymbols}
+    </div>
+  );
+};
+
 
 
 function Result({ result }) {
   const formatNumber = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
+
+  const formatBeforeDecimal = (inputString) => {
+    const [integerPart, decimalPart] = inputString.split('.');
+    const formattedInteger = formatNumber(integerPart);
+    return decimalPart !== undefined ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+  };
+
   const inputString = String(result);
-  const formattedString = inputString.replace(/\d+/g, (match) => formatNumber(match));
+  const formattedString = formatBeforeDecimal(inputString);
+
   console.log(formattedString);
   return (
     <div className="result">{formattedString}</div>
-  )
+  );
 }
 
