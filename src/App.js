@@ -31,13 +31,13 @@ export default function App() {
               onChange={toggleTheme}
               checked={theme === "dark"}
               uncheckedIcon={
-              <div className="unchecked-icon"><SunIcon /></div>}
+                <div className="unchecked-icon"><MoonIcon /></div>}
               checkedIcon={
-              <div className="checked-icon"><MoonIcon /></div>}
-              onColor="#0066cc"
-              onHandleColor="#ffffff"
-              offHandleColor="#0066cc"
-              offColor="#ffffff"
+                <div className="checked-icon"><SunIcon /></div>}
+              onColor="#ffffff"
+              onHandleColor="#0066cc"
+              offHandleColor="#ffffff"
+              offColor="#0066cc"
               height={40}
               width={80}
             />

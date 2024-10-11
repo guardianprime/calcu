@@ -1,7 +1,8 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const generateUniqueKey = () => {
-    return Math.random().toString(36).substr(2, 9);
+    return uuidv4();
 };
 
 const formatNumber = (number) => {
@@ -16,7 +17,7 @@ const replaceSymbols = (inputString) => {
         '-': <span className="styled-symbols" key={generateUniqueKey()}>-</span>
     };
 
-    return inputString.split('').map((char) =>
+    return inputString.split('').map((char, index) =>
         replacements[char] ? replacements[char] : <span key={generateUniqueKey()}>{char}</span>
     );
 };
@@ -39,7 +40,11 @@ const Preview = ({ preview }) => {
     const formattedString = formatContent(preview);
 
     // Then, replace symbols
-    const contentWithSymbols = replaceSymbols(formattedString);
+    const contentWithSymbols = replaceSymbols(formattedString).map((element, index) => {
+        // Assign a unique key to each element
+        const key = generateUniqueKey();
+        return React.cloneElement(element, { key });
+    });
 
     return (
         <div className="preview">
@@ -49,3 +54,25 @@ const Preview = ({ preview }) => {
 };
 
 export default Preview;
+
+/* 
+
+// ... (rest of your code)
+
+const Preview = ({ preview }) => {
+  // Format numbers first
+  const formattedString = formatContent(preview);
+
+  // Then, replace symbols
+  const contentWithSymbols = replaceSymbols(formattedString).map((element, index) => {
+    // Assign a unique key to each element
+    const key = generateUniqueKey();
+    return React.cloneElement(element, { key });
+  });
+
+  return (
+    <div className="preview">
+      {contentWithSymbols}
+    </div>
+  );
+}; */

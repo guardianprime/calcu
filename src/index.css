@@ -31,18 +31,14 @@
 
 .screen {
   height: 40%;
-}
-
-.color {
-  color: #ffff;
+  padding: 20px;
 }
 
 .mode-toggle {
-  width: 70px;
-  height: min-content;
-  margin: 50px auto;
+  width: 80px;
+  height: 40px;
+  margin: 0px auto;
   border-radius: 10px;
-  outline: 2px solid yellow;
 }
 
 .checked-icon {
@@ -63,6 +59,8 @@
   outline: 2px solid green;
   font-size: 1.5rem;
   padding: 10px;
+  margin-top: 20px;
+  height: 100px;
   width: 100%;
   color: var(--BUTTON-COLOR);
   font-weight: 600;
@@ -70,10 +68,10 @@
 }
 
 .preview {
-  margin-top: 90px;
+  margin-top: 130px;
   padding: 10px;
   width: 50%;
-  height: max-content;
+  height: 100px;
   outline: 2px solid red;
   color: white;
   font-size: 1.4rem;
