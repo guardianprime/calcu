@@ -35,9 +35,9 @@ export default function App() {
               checkedIcon={
                 <div className="checked-icon"><SunIcon /></div>}
               onColor="#ffffff"
-              onHandleColor="#0066cc"
+              onHandleColor="#020202"
               offHandleColor="#ffffff"
-              offColor="#0066cc"
+              offColor="#020202"
               height={40}
               width={80}
             />
