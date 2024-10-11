@@ -1,4 +1,4 @@
-import useState from "react";
+import { useState } from "react";
 
 function DeleteButtonOperator({ children, classes, preview, setPreview, finishedCalculating }) {
     const [clicked, setClicked] = useState(false);

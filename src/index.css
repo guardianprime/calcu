@@ -5,29 +5,58 @@
 }
 
 :root {
+  /* DARKMODE  */
   --BUTTON-BGCOLOR: rgba(20, 20, 20, 0.9);
   --FADE-BUTTON-BGCOLOR: rgb(35, 33, 33);
   --BUTTON-COLOR: rgba(250, 20, 100, 1);
   --FADE-BUTTON-COLOR: rgb(255, 95, 151);
-  --APP-BGCOLOR: rgb(43, 43, 43);
+  --APP-BGCOLOR: rgb(21, 21, 21);
   --NUMBER-COLOR: rgb(250, 250, 250);
+  --BUTTONS-CONTAINER-BGCOLOR: rgb(43, 43, 43);
+
+  /* LIGHTMODE */
+}
+#light {
+  background-color: white;
+}
+
+#dark {
+  background-color: var(--APP-BGCOLOR);
 }
 
 .app-container {
   width: 100%;
   height: 100vh;
-  background-color: var(--APP-BGCOLOR);
 }
 
 .screen {
   height: 40%;
 }
 
+.color {
+  color: #ffff;
+}
+
 .mode-toggle {
-  width: 80px;
-  height: 30px;
+  width: 70px;
+  height: min-content;
+  margin: 50px auto;
   border-radius: 10px;
   outline: 2px solid yellow;
+}
+
+.checked-icon {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unchecked-icon {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .result {
@@ -52,8 +81,10 @@
 }
 
 .buttons-container {
+  background-color: var(--BUTTONS-CONTAINER-BGCOLOR);
   padding: 10px;
   height: 60%;
+  border-radius: 20px 20px 0 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px;
